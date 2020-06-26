@@ -29,7 +29,7 @@ public class User {
     }
 
     public String getScreenName() {
-        return screenName;
+        return "@" + screenName;
     }
 
     public void setScreenName(String screenName) {
