@@ -18,6 +18,7 @@ public class Tweet {
     String body;
     String createdAt;
     User user;
+    Media media;
 
     public Tweet() {}
 
@@ -27,6 +28,12 @@ public class Tweet {
         tweet.setBody(obj.getString("text"));
         tweet.setCreatedAt(obj.getString("created_at"));
         tweet.setUser(User.fromJson(obj.getJSONObject("user")));
+
+        JSONObject entities = obj.getJSONObject("entities");
+        if(entities.has("media") && entities.getJSONArray("media").length() != 0) {
+            JSONObject selectedMedia = entities.getJSONArray("media").getJSONObject(0);
+            tweet.setMedia(Media.fromJson(selectedMedia));
+        }
 
         return tweet;
     }
@@ -79,5 +86,13 @@ public class Tweet {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Media getMedia() {
+        return media;
+    }
+
+    public void setMedia(Media media) {
+        this.media = media;
     }
 }

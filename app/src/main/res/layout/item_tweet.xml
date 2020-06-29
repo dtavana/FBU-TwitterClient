@@ -62,4 +62,13 @@
         android:layout_toEndOf="@+id/tvScreenName"
         android:textSize="8sp"
         tools:text="· 10 min. ago" />
+
+    <ImageView
+        android:id="@+id/ivMedia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvBody"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        tools:srcCompat="@tools:sample/avatars" />
 </RelativeLayout>
