@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.codepath.apps.restclienttemplate.InflateImageActivity;
 import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.models.Media;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.dtavana.flixter.GlideApp;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -24,6 +29,16 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     public TweetsAdapter(Context ctx, List<Tweet> tweets) {
         this.ctx = ctx;
         this.tweets = tweets;
+    }
+
+    public void clear() {
+        tweets.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAll(List<Tweet> tweets) {
+        this.tweets.addAll(tweets);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -47,6 +62,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView ivAvatar;
+        ImageView ivMedia;
         TextView tvBody;
         TextView tvScreenName;
         TextView tvName;
@@ -55,6 +71,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivAvatar = itemView.findViewById(R.id.ivAvatar);
+            ivMedia = itemView.findViewById(R.id.ivMedia);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
             tvName = itemView.findViewById(R.id.tvName);
@@ -63,6 +80,17 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
         public void bind(Tweet tweet) {
             GlideApp.with(ctx).load(tweet.getUser().getImageUrl()).into(ivAvatar);
+            if(tweet.getMedia() != null) {
+                GlideApp.with(ctx).load(tweet.getMedia().getMediaUrl()).override(800, 600).into(ivMedia);
+                ivMedia.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent i = new Intent(ctx, InflateImageActivity.class);
+                        i.putExtra(Media.class.getSimpleName(), Parcels.wrap(tweets.get(getAdapterPosition()).getMedia()));
+                        ctx.startActivity(i);
+                    }
+                });
+            }
             tvBody.setText(tweet.getBody());
             tvScreenName.setText(tweet.getUser().getScreenName());
             tvName.setText(tweet.getUser().getName());
