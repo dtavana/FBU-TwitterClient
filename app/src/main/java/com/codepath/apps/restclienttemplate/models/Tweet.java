@@ -66,7 +66,7 @@ public class Tweet {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return relativeDate;
+        return "· " + relativeDate;
     }
 
     public User getUser() {

@@ -22,10 +22,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="3dp"
         android:layout_toEndOf="@+id/tvName"
-        android:textSize="12sp"
+        android:textSize="10sp"
         tools:text="\@dtavana" />
 
     <TextView
@@ -33,9 +33,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvScreenName"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="2dp"
         android:layout_toEndOf="@+id/ivAvatar"
+        android:textSize="16sp"
         tools:text="This is my tweet" />
 
     <TextView
@@ -43,10 +44,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="2dp"
         android:layout_toEndOf="@+id/ivAvatar"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:textStyle="bold"
         tools:text="Darian Tavana" />
 
@@ -56,10 +57,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="2dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/tvScreenName"
-        android:gravity="right"
-        android:textAlignment="gravity"
         android:textSize="8sp"
-        tools:text="10 minutes ago" />
+        tools:text="· 10 min. ago" />
 </RelativeLayout>
