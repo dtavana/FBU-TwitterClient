@@ -11,11 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.codepath.apps.restclienttemplate.GlideApp;
-import com.codepath.apps.restclienttemplate.InflateImageActivity;
+import com.codepath.apps.restclienttemplate.activities.InflateImageActivity;
 import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.models.Media;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.utils.GlideApp;
 
 import org.parceler.Parcels;
 
