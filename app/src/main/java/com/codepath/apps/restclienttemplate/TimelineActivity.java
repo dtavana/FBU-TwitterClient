@@ -36,6 +36,7 @@ public class TimelineActivity extends AppCompatActivity {
     List<Tweet> tweets;
     TweetsAdapter adapter;
     SwipeRefreshLayout swipeContainer;
+    MenuItem miActionProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,7 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     public void fetchTimelineAsync() {
+        showProgressBar();
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -80,18 +82,37 @@ public class TimelineActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                hideProgressBar();
             }
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.e(TAG, "onFailure: Error refreshing", throwable);
+                hideProgressBar();
             }
         });
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        miActionProgress = menu.findItem(R.id.miActionProgress);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        miActionProgress.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        miActionProgress.setVisible(false);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        miActionProgress = menu.findItem(R.id.miActionProgress);
         return true;
     }
 
