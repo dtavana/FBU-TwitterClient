@@ -1,4 +1,4 @@
-package com.dtavana.flixter;
+package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
 
@@ -18,5 +18,6 @@ public final class MyAppGlideModule extends AppGlideModule {
         // Increase memory usage for quality with:
 
         builder.setDefaultRequestOptions(new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888));
+
     }
 }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.codepath.apps.restclienttemplate.models.Media;
-import com.dtavana.flixter.GlideApp;
 
 import org.parceler.Parcels;
 
@@ -22,7 +21,5 @@ public class InflateImageActivity extends AppCompatActivity {
         Media media = Parcels.unwrap(getIntent().getParcelableExtra(Media.class.getSimpleName()));
 
         GlideApp.with(this).load(media.getLargeMediaUrl()).into(ivInflatedImage);
-
-
     }
 }
