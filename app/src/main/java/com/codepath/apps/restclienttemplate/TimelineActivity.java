@@ -68,31 +68,6 @@ public class TimelineActivity extends AppCompatActivity {
         populateHomeTimeline();
     }
 
-    public void fetchTimelineAsync() {
-        showProgressBar();
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Headers headers, JSON json) {
-                adapter.clear();
-                JSONArray arr = json.jsonArray;
-                try {
-                    adapter.addAll(Tweet.fromJsonArray(arr));
-                    swipeContainer.setRefreshing(false);
-                    Log.i(TAG, "onSuccess: Finished refreshing");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                hideProgressBar();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.e(TAG, "onFailure: Error refreshing", throwable);
-                hideProgressBar();
-            }
-        });
-    }
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         miActionProgress = menu.findItem(R.id.miActionProgress);
@@ -112,7 +87,6 @@ public class TimelineActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        miActionProgress = menu.findItem(R.id.miActionProgress);
         return true;
     }
 
@@ -129,6 +103,7 @@ public class TimelineActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            assert data != null;
             Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
             tweets.add(0, tweet);
             adapter.notifyItemInserted(0);
@@ -154,6 +129,31 @@ public class TimelineActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.e(TAG, "onFailure: " + response, throwable);
+            }
+        });
+    }
+
+    public void fetchTimelineAsync() {
+        showProgressBar();
+        client.getHomeTimeline(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                adapter.clear();
+                JSONArray arr = json.jsonArray;
+                try {
+                    adapter.addAll(Tweet.fromJsonArray(arr));
+                    swipeContainer.setRefreshing(false);
+                    Log.i(TAG, "onSuccess: Finished refreshing");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                hideProgressBar();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.e(TAG, "onFailure: Error refreshing", throwable);
+                hideProgressBar();
             }
         });
     }
