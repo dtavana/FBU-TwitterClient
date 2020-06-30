@@ -21,6 +21,8 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
 
     Context ctx;
@@ -78,15 +80,22 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
         }
 
-        public void bind(Tweet tweet) {
-            GlideApp.with(ctx).load(tweet.getUser().getImageUrl()).into(ivAvatar);
+        public void bind(final Tweet tweet) {
+            GlideApp.with(ctx)
+                    .load(tweet.getUser().getImageUrl())
+                    .transform(new RoundedCornersTransformation(30, 10))
+                    .into(ivAvatar);
             if(tweet.getMedia() != null) {
-                GlideApp.with(ctx).load(tweet.getMedia().getMediaUrl()).override(800, 600).into(ivMedia);
+                GlideApp.with(ctx)
+                        .load(tweet.getMedia().getMediaUrl())
+                        .override(800, 600)
+                        .transform(new RoundedCornersTransformation(30, 10))
+                        .into(ivMedia);
                 ivMedia.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent i = new Intent(ctx, InflateImageActivity.class);
-                        i.putExtra(Media.class.getSimpleName(), Parcels.wrap(tweets.get(getAdapterPosition()).getMedia()));
+                        i.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
                         ctx.startActivity(i);
                     }
                 });

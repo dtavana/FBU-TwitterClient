@@ -4,16 +4,85 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/black"
     tools:context=".InflateImageActivity">
 
     <ImageView
         android:id="@+id/ivInflatedImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#777272"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@android:color/black"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivInflatedImage"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="0dp"
+        android:background="@android:color/black" />
+
+    <ImageView
+        android:id="@+id/ivAvatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/ivInflatedImage"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvScreenName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivInflatedImage"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@+id/tvName"
+        android:textColor="@color/twitter_secondary_white"
+        android:textSize="10sp"
+        tools:text="\@dtavana" />
+
+    <TextView
+        android:id="@+id/tvBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvScreenName"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="7dp"
+        android:layout_toEndOf="@+id/ivAvatar"
+        android:textColor="@color/twitter_secondary_white"
+        android:textSize="16sp"
+        tools:text="This is my tweet" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivInflatedImage"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="7dp"
+        android:layout_toEndOf="@+id/ivAvatar"
+        android:textColor="@color/twitter_secondary_white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        tools:text="Darian Tavana" />
+
+    <TextView
+        android:id="@+id/tvTimestamp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivInflatedImage"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/tvScreenName"
+        android:textColor="@color/twitter_secondary_white"
+        android:textSize="8sp"
+        tools:text="· 10 min. ago" />
+
 </RelativeLayout>
