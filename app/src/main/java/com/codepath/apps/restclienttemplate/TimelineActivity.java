@@ -38,6 +38,10 @@ public class TimelineActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeContainer;
     MenuItem miActionProgress;
 
+    EndlessRecyclerViewScrollListener scrollListener;
+
+    long maxId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,18 +49,32 @@ public class TimelineActivity extends AppCompatActivity {
 
         client = TwitterApp.getRestClient(this);
 
+        maxId = 0;
+
         rvTweets = findViewById(R.id.rvTweets);
         swipeContainer = findViewById(R.id.swipeContainer);
         tweets = new ArrayList<>();
         adapter = new TweetsAdapter(this, tweets);
-        rvTweets.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvTweets.setLayoutManager(layoutManager);
         rvTweets.setAdapter(adapter);
+
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                fetchTimelineAsync();
+            }
+        };
+
+        rvTweets.addOnScrollListener(scrollListener);
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Log.i(TAG, "onRefresh: Starting refresh");
-                fetchTimelineAsync();
+                populateHomeTimeline(true);
             }
         });
 
@@ -65,7 +83,7 @@ public class TimelineActivity extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        populateHomeTimeline();
+        populateHomeTimeline(false);
     }
 
     @Override
@@ -112,15 +130,26 @@ public class TimelineActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void populateHomeTimeline() {
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
+    private void populateHomeTimeline(final boolean isRefreshing) {
+        // Pass in a maxId of 0 so that we get a full refresh
+        client.getHomeTimeline(0, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 Log.i(TAG, "onSuccess: " + json.toString());
+                adapter.clear();
                 JSONArray arr = json.jsonArray;
                 try {
-                    tweets.addAll(Tweet.fromJsonArray(arr));
+                    for(Tweet tweet : Tweet.fromJsonArray(arr)) {
+                        if(tweet.getId() < maxId || maxId <= 0) {
+                            maxId = tweet.getId();
+                            Log.d(TAG, "onSuccessPagination: New maxId " + maxId);
+                        }
+                        tweets.add(tweet);
+                    }
                     adapter.notifyDataSetChanged();
+                    if(isRefreshing) {
+                        swipeContainer.setRefreshing(false);
+                    }
                 } catch (JSONException e) {
                     Log.e(TAG, "onSuccess: JSON Exception", e);
                 }
@@ -135,15 +164,23 @@ public class TimelineActivity extends AppCompatActivity {
 
     public void fetchTimelineAsync() {
         showProgressBar();
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
+        // Decrement maxId so we only get new tweets
+        maxId--;
+        Log.d(TAG, "fetchTimelineAsync: Decremented maxId " + maxId);
+        client.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                adapter.clear();
+                Log.i(TAG, "onSuccessPagination: " + json.toString());
                 JSONArray arr = json.jsonArray;
                 try {
-                    adapter.addAll(Tweet.fromJsonArray(arr));
-                    swipeContainer.setRefreshing(false);
-                    Log.i(TAG, "onSuccess: Finished refreshing");
+                    for(Tweet tweet : Tweet.fromJsonArray(arr)) {
+                        if(tweet.getId() < maxId || maxId <= 0) {
+                            maxId = tweet.getId();
+                            Log.d(TAG, "onSuccessPagination: New maxId " + maxId);
+                        }
+                        tweets.add(tweet);
+                    }
+                    adapter.notifyItemInserted(tweets.size() - 1);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -152,7 +189,7 @@ public class TimelineActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.e(TAG, "onFailure: Error refreshing", throwable);
+                Log.e(TAG, "onFailurePagination: Error refreshing", throwable);
                 hideProgressBar();
             }
         });

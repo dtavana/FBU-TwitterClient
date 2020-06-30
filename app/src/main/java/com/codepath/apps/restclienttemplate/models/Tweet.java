@@ -1,7 +1,9 @@
 package com.codepath.apps.restclienttemplate.models;
 
 import android.text.format.DateUtils;
+import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,25 +17,33 @@ import java.util.Locale;
 
 @Parcel
 public class Tweet {
+    public static final String TAG = "TweetModel";
+
     String body;
     String createdAt;
     User user;
     Media media;
+    long id;
 
     public Tweet() {}
 
     public static Tweet fromJson(JSONObject obj) throws JSONException {
         Tweet tweet = new Tweet();
 
+        // Log.d(TAG, "fromJson: Original object " + obj.toString());
+
         tweet.setBody(obj.getString("text"));
         tweet.setCreatedAt(obj.getString("created_at"));
         tweet.setUser(User.fromJson(obj.getJSONObject("user")));
+        tweet.setId(obj.getLong("id"));
 
         JSONObject entities = obj.getJSONObject("entities");
         if(entities.has("media") && entities.getJSONArray("media").length() != 0) {
             JSONObject selectedMedia = entities.getJSONArray("media").getJSONObject(0);
             tweet.setMedia(Media.fromJson(selectedMedia));
         }
+
+        // Log.d(TAG, "fromJson: Constructed tweet + " + tweet.toString());
 
         return tweet;
     }
@@ -94,5 +104,21 @@ public class Tweet {
 
     public void setMedia(Media media) {
         this.media = media;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    @NotNull
+    @Override
+    public String toString() {
+        return "Tweet{" +
+                "id=" + id +
+                '}';
     }
 }
