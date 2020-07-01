@@ -4,6 +4,7 @@ package com.codepath.apps.restclienttemplate.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
@@ -107,7 +108,9 @@ public class DetailsActivity extends AppCompatActivity {
         ivReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i = new Intent(DetailsActivity.this, ComposeActivity.class);
+                i.putExtra(ComposeActivity.KEY_STARTTEXT, tweet.getUser().getScreenName() + " ");
+                startActivity(i);
             }
         });
 

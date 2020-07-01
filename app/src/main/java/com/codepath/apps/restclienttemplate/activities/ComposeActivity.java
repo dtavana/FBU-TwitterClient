@@ -26,6 +26,7 @@ import okhttp3.Headers;
 public class ComposeActivity extends AppCompatActivity {
 
     public static final String TAG = ComposeActivity.class.getSimpleName();
+    public static final String KEY_STARTTEXT = "startText";
 
     public static final int MAX_TWEET_LENGTH = 280;
 
@@ -45,6 +46,12 @@ public class ComposeActivity extends AppCompatActivity {
 
         etCompose = findViewById(R.id.etCompose);
         btnTweet = findViewById(R.id.btnTweet);
+
+        String etComposeStartText = getIntent().getStringExtra(KEY_STARTTEXT);
+        if(etComposeStartText != null) {
+            etCompose.setText(etComposeStartText);
+            etCompose.requestFocus();
+        }
 
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
