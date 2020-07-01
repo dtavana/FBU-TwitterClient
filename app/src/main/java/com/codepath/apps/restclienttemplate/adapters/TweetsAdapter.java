@@ -80,6 +80,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         }
 
         public void bind(final Tweet tweet) {
+            // Fix for a ViewHolder showing the wrong image after scrolling
+            ivMedia.setImageResource(android.R.color.transparent);
             GlideApp.with(ctx)
                     .load(tweet.getUser().getImageUrl())
                     .transform(new RoundedCornersTransformation(30, 10))

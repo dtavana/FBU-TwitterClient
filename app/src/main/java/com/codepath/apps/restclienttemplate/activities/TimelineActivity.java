@@ -178,20 +178,23 @@ public class TimelineActivity extends AppCompatActivity {
         // Decrement maxId so we only get new tweets
         maxId--;
         Log.d(TAG, "fetchTimelineAsync: Decremented maxId " + maxId);
+        final int startPosition = tweets.size();
         client.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 Log.i(TAG, "onSuccessPagination: " + json.toString());
                 JSONArray arr = json.jsonArray;
                 try {
+                    int insertedItemCnt = 0;
                     for(Tweet tweet : Tweet.fromJsonArray(arr)) {
                         if(tweet.getId() < maxId || maxId <= 0) {
                             maxId = tweet.getId();
                             Log.d(TAG, "onSuccessPagination: New maxId " + maxId);
                         }
                         tweets.add(tweet);
+                        insertedItemCnt++;
                     }
-                    adapter.notifyItemInserted(tweets.size() - 1);
+                    adapter.notifyItemRangeInserted(startPosition, insertedItemCnt);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
