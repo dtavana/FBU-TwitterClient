@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.codepath.apps.restclienttemplate.activities.DetailsActivity;
 import com.codepath.apps.restclienttemplate.activities.InflateImageActivity;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.models.Tweet;
@@ -79,9 +80,23 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
         }
 
+        private void setupDetailsClick(final Tweet tweet, View itemView) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(ctx, DetailsActivity.class);
+                    i.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
+                    ctx.startActivity(i);
+                }
+            });
+        }
+
         public void bind(final Tweet tweet) {
             // Fix for a ViewHolder showing the wrong image after scrolling
             ivMedia.setImageResource(android.R.color.transparent);
+
+            setupDetailsClick(tweet, itemView);
+
             GlideApp.with(ctx)
                     .load(tweet.getUser().getImageUrl())
                     .transform(new RoundedCornersTransformation(30, 10))
@@ -92,6 +107,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                         .override(800, 600)
                         .transform(new RoundedCornersTransformation(30, 10))
                         .into(ivMedia);
+                /*
                 ivMedia.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -100,6 +116,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                         ctx.startActivity(i);
                     }
                 });
+                 */
             }
             tvBody.setText(tweet.getBody());
             tvScreenName.setText(tweet.getUser().getScreenName());

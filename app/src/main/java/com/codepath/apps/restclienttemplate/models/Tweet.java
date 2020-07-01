@@ -1,7 +1,6 @@
 package com.codepath.apps.restclienttemplate.models;
 
 import android.text.format.DateUtils;
-import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -24,6 +23,10 @@ public class Tweet {
     User user;
     Media media;
     long id;
+    boolean retweeted;
+    boolean favorited;
+    int retweetCount;
+    int favoriteCount;
 
     public Tweet() {}
 
@@ -36,6 +39,10 @@ public class Tweet {
         tweet.setCreatedAt(obj.getString("created_at"));
         tweet.setUser(User.fromJson(obj.getJSONObject("user")));
         tweet.setId(obj.getLong("id"));
+        tweet.setRetweeted(obj.getBoolean("retweeted"));
+        tweet.setFavorited(obj.getBoolean("favorited"));
+        tweet.setRetweetCount(obj.getInt("retweet_count"));
+        tweet.setFavoriteCount(obj.getInt("favorite_count"));
 
         JSONObject entities = obj.getJSONObject("entities");
         if(entities.has("media") && entities.getJSONArray("media").length() != 0) {
@@ -112,6 +119,38 @@ public class Tweet {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public boolean isRetweeted() {
+        return retweeted;
+    }
+
+    public void setRetweeted(boolean retweeted) {
+        this.retweeted = retweeted;
+    }
+
+    public boolean isFavorited() {
+        return favorited;
+    }
+
+    public void setFavorited(boolean favorited) {
+        this.favorited = favorited;
+    }
+
+    public int getRetweetCount() {
+        return retweetCount;
+    }
+
+    public void setRetweetCount(int retweetCount) {
+        this.retweetCount = retweetCount;
+    }
+
+    public int getFavoriteCount() {
+        return favoriteCount;
+    }
+
+    public void setFavoriteCount(int favoriteCount) {
+        this.favoriteCount = favoriteCount;
     }
 
     @NotNull
