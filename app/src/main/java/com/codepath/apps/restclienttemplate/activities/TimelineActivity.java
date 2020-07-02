@@ -12,8 +12,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding;
 import com.codepath.apps.restclienttemplate.utils.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.network.TwitterApp;
@@ -37,12 +37,13 @@ public class TimelineActivity extends AppCompatActivity {
     public static final String TAG = "TimelineActivity";
     private final int REQUEST_CODE = 20;
 
-    TwitterClient client;
-    RecyclerView rvTweets;
-    List<Tweet> tweets;
-    TweetsAdapter adapter;
-    SwipeRefreshLayout swipeContainer;
+    ActivityTimelineBinding binding;
     MenuItem miActionProgress;
+
+
+    List<Tweet> tweets;
+
+    TwitterClient client;
 
     EndlessRecyclerViewScrollListener scrollListener;
 
@@ -51,7 +52,8 @@ public class TimelineActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timeline);
+        binding = ActivityTimelineBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
@@ -59,16 +61,13 @@ public class TimelineActivity extends AppCompatActivity {
 
         maxId = 0;
 
-        rvTweets = findViewById(R.id.rvTweets);
-        swipeContainer = findViewById(R.id.swipeContainer);
         tweets = new ArrayList<>();
-        adapter = new TweetsAdapter(this, tweets);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvTweets.setLayoutManager(layoutManager);
-        rvTweets.setAdapter(adapter);
+        binding.rvTweets.setLayoutManager(layoutManager);
+        binding.rvTweets.setAdapter(new TweetsAdapter(this, tweets));
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
-        rvTweets.addItemDecoration(dividerItemDecoration);
+        binding.rvTweets.addItemDecoration(dividerItemDecoration);
 
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
@@ -79,9 +78,9 @@ public class TimelineActivity extends AppCompatActivity {
             }
         };
 
-        rvTweets.addOnScrollListener(scrollListener);
+        binding.rvTweets.addOnScrollListener(scrollListener);
 
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        binding.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Log.i(TAG, "onRefresh: Starting refresh");
@@ -89,7 +88,7 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+        binding.swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
@@ -134,8 +133,8 @@ public class TimelineActivity extends AppCompatActivity {
             assert data != null;
             Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
             tweets.add(0, tweet);
-            adapter.notifyItemInserted(0);
-            rvTweets.smoothScrollToPosition(0);
+            Objects.requireNonNull(binding.rvTweets.getAdapter()).notifyItemInserted(0);
+            binding.rvTweets.smoothScrollToPosition(0);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -146,7 +145,7 @@ public class TimelineActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 Log.i(TAG, "onSuccess: " + json.toString());
-                adapter.clear();
+                ((TweetsAdapter) Objects.requireNonNull(binding.rvTweets.getAdapter())).clear();
                 JSONArray arr = json.jsonArray;
                 try {
                     for(Tweet tweet : Tweet.fromJsonArray(arr)) {
@@ -156,9 +155,9 @@ public class TimelineActivity extends AppCompatActivity {
                         }
                         tweets.add(tweet);
                     }
-                    adapter.notifyDataSetChanged();
+                    binding.rvTweets.getAdapter().notifyDataSetChanged();
                     if(isRefreshing) {
-                        swipeContainer.setRefreshing(false);
+                        binding.swipeContainer.setRefreshing(false);
                     }
                 } catch (JSONException e) {
                     Log.e(TAG, "onSuccess: JSON Exception", e);
@@ -193,7 +192,7 @@ public class TimelineActivity extends AppCompatActivity {
                         tweets.add(tweet);
                         insertedItemCnt++;
                     }
-                    adapter.notifyItemRangeInserted(startPosition, insertedItemCnt);
+                    Objects.requireNonNull(binding.rvTweets.getAdapter()).notifyItemRangeInserted(startPosition, insertedItemCnt);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

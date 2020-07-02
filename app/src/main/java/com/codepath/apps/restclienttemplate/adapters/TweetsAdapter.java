@@ -5,15 +5,11 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codepath.apps.restclienttemplate.activities.DetailsActivity;
-import com.codepath.apps.restclienttemplate.activities.InflateImageActivity;
-import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.databinding.ItemTweetBinding;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.utils.GlideApp;
 
@@ -46,8 +42,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(ctx).inflate(R.layout.item_tweet, parent, false);
-        return new ViewHolder(view);
+        ItemTweetBinding binding = ItemTweetBinding.inflate(LayoutInflater.from(ctx), parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override
@@ -63,21 +59,11 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView ivAvatar;
-        ImageView ivMedia;
-        TextView tvBody;
-        TextView tvScreenName;
-        TextView tvName;
-        TextView tvTimestamp;
+        ItemTweetBinding binding;
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ivAvatar = itemView.findViewById(R.id.ivAvatar);
-            ivMedia = itemView.findViewById(R.id.ivMedia);
-            tvBody = itemView.findViewById(R.id.tvBody);
-            tvScreenName = itemView.findViewById(R.id.tvScreenName);
-            tvName = itemView.findViewById(R.id.tvName);
-            tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
+        public ViewHolder(ItemTweetBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
 
         private void setupDetailsClick(final Tweet tweet, View itemView) {
@@ -93,35 +79,25 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
         public void bind(final Tweet tweet) {
             // Fix for a ViewHolder showing the wrong image after scrolling
-            ivMedia.setImageResource(android.R.color.transparent);
+            binding.ivMedia.setImageResource(android.R.color.transparent);
 
             setupDetailsClick(tweet, itemView);
 
             GlideApp.with(ctx)
                     .load(tweet.getUser().getImageUrl())
                     .transform(new RoundedCornersTransformation(30, 10))
-                    .into(ivAvatar);
+                    .into(binding.ivAvatar);
             if(tweet.getMedia() != null) {
                 GlideApp.with(ctx)
                         .load(tweet.getMedia().getMediaUrl())
                         .override(800, 600)
                         .transform(new RoundedCornersTransformation(30, 10))
-                        .into(ivMedia);
-                /*
-                ivMedia.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent i = new Intent(ctx, InflateImageActivity.class);
-                        i.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
-                        ctx.startActivity(i);
-                    }
-                });
-                 */
+                        .into(binding.ivMedia);
             }
-            tvBody.setText(tweet.getBody());
-            tvScreenName.setText(tweet.getUser().getScreenName());
-            tvName.setText(tweet.getUser().getName());
-            tvTimestamp.setText(tweet.getRelativeTimeAgo());
+            binding.tvBody.setText(tweet.getBody());
+            binding.tvScreenName.setText(tweet.getUser().getScreenName());
+            binding.tvName.setText(tweet.getUser().getName());
+            binding.tvTimestamp.setText(tweet.getRelativeTimeAgo());
         }
     }
 

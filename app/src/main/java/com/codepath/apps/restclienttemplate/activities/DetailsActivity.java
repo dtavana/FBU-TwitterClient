@@ -9,10 +9,9 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.databinding.ActivityDetailsBinding;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.network.TwitterApp;
 import com.codepath.apps.restclienttemplate.network.TwitterClient;
@@ -30,15 +29,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "DetailsActivity";
 
-    ImageView ivInflatedImage;
-    ImageView ivAvatar;
-    TextView tvBody;
-    TextView tvScreenName;
-    TextView tvName;
-    TextView tvTimestamp;
-    ImageView ivReply;
-    ImageView ivRetweet;
-    ImageView ivFavorite;
+    ActivityDetailsBinding binding;
 
     Tweet tweet;
 
@@ -47,21 +38,12 @@ public class DetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
+        binding = ActivityDetailsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         Objects.requireNonNull(getSupportActionBar()).hide();
 
         client = TwitterApp.getRestClient(this);
-
-        ivInflatedImage = findViewById(R.id.ivInflatedImage);
-        ivAvatar = findViewById(R.id.ivAvatar);
-        tvBody = findViewById(R.id.tvBody);
-        tvScreenName = findViewById(R.id.tvScreenName);
-        tvName = findViewById(R.id.tvName);
-        tvTimestamp = findViewById(R.id.tvTimestamp);
-        ivReply = findViewById(R.id.ivReply);
-        ivRetweet = findViewById(R.id.ivRetweet);
-        ivFavorite = findViewById(R.id.ivFavorite);
 
         tweet = Parcels.unwrap(getIntent().getParcelableExtra(Tweet.class.getSimpleName()));
 
@@ -69,43 +51,43 @@ public class DetailsActivity extends AppCompatActivity {
         updateRetweetColor();
         setupClickListeners();
 
-        tvBody.setText(tweet.getBody());
-        tvScreenName.setText(tweet.getUser().getScreenName());
-        tvName.setText(tweet.getUser().getName());
-        tvTimestamp.setText(tweet.getRelativeTimeAgo());
+        binding.tvBody.setText(tweet.getBody());
+        binding.tvScreenName.setText(tweet.getUser().getScreenName());
+        binding.tvName.setText(tweet.getUser().getName());
+        binding.tvTimestamp.setText(tweet.getRelativeTimeAgo());
         GlideApp.with(this)
                 .load(tweet.getUser().getImageUrl())
                 .transform(new RoundedCornersTransformation(30, 10))
-                .into(ivAvatar);
+                .into(binding.ivAvatar);
         if(tweet.getMedia() != null) {
             GlideApp.with(this)
                     .load(tweet.getMedia().getLargeMediaUrl())
                     .transform(new RoundedCornersTransformation(30, 10))
-                    .into(ivInflatedImage);
+                    .into(binding.ivInflatedImage);
         }
 
     }
 
     private void updateFavoriteColor() {
         if(tweet.isFavorited()) {
-            ivFavorite.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_red_light)));
+            binding.ivFavorite.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_red_light)));
         }
         else {
-            ivFavorite.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.twitter_secondary_white)));
+            binding.ivFavorite.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.twitter_secondary_white)));
         }
     }
 
     private void updateRetweetColor() {
         if(tweet.isRetweeted()) {
-            ivRetweet.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_green_light)));
+            binding.ivRetweet.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_green_light)));
         }
         else {
-            ivRetweet.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.twitter_secondary_white)));
+            binding.ivRetweet.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.twitter_secondary_white)));
         }
     }
 
     private void setupClickListeners() {
-        ivReply.setOnClickListener(new View.OnClickListener() {
+        binding.ivReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(DetailsActivity.this, ComposeActivity.class);
@@ -114,7 +96,7 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
-        ivRetweet.setOnClickListener(new View.OnClickListener() {
+        binding.ivRetweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean retweeted = tweet.isRetweeted();
@@ -155,7 +137,7 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
-        ivFavorite.setOnClickListener(new View.OnClickListener() {
+        binding.ivFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean favorited = tweet.isFavorited();

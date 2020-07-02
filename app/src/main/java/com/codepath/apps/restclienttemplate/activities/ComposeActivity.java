@@ -6,11 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.databinding.ActivityComposeBinding;
 import com.codepath.apps.restclienttemplate.network.TwitterApp;
 import com.codepath.apps.restclienttemplate.network.TwitterClient;
 import com.codepath.apps.restclienttemplate.models.Tweet;
@@ -30,34 +28,31 @@ public class ComposeActivity extends AppCompatActivity {
 
     public static final int MAX_TWEET_LENGTH = 280;
 
-    TwitterClient client;
+    ActivityComposeBinding binding;
 
-    EditText etCompose;
-    Button btnTweet;
+    TwitterClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_compose);
+        binding = ActivityComposeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         client = TwitterApp.getRestClient(this);
 
-        etCompose = findViewById(R.id.etCompose);
-        btnTweet = findViewById(R.id.btnTweet);
-
         String etComposeStartText = getIntent().getStringExtra(KEY_STARTTEXT);
         if(etComposeStartText != null) {
-            etCompose.setText(etComposeStartText);
+            binding.etCompose.setText(etComposeStartText);
         }
 
-        etCompose.requestFocus();
+        binding.etCompose.requestFocus();
 
-        btnTweet.setOnClickListener(new View.OnClickListener() {
+        binding.btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String tweetContent = etCompose.getText().toString();
+                final String tweetContent = binding.etCompose.getText().toString();
                 if(tweetContent.isEmpty()) {
                     //TODO Android Snackbar
                     Toast.makeText(ComposeActivity.this, "Your tweet can not be empty", Toast.LENGTH_LONG).show();
