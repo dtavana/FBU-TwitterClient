@@ -66,8 +66,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             this.binding = binding;
         }
 
-        private void setupDetailsClick(final Tweet tweet, View itemView) {
-            itemView.setOnClickListener(new View.OnClickListener() {
+        private void setupDetailsClick(final Tweet tweet) {
+            binding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(ctx, DetailsActivity.class);
@@ -81,7 +81,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             // Fix for a ViewHolder showing the wrong image after scrolling
             binding.ivMedia.setImageResource(android.R.color.transparent);
 
-            setupDetailsClick(tweet, itemView);
+            setupDetailsClick(tweet);
 
             GlideApp.with(ctx)
                     .load(tweet.getUser().getImageUrl())
