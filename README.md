@@ -2,7 +2,7 @@
 
 **TwitterClient** is an android app that allows a user to view their Twitter timeline and post a new tweet. The app utilizes [Twitter REST API](https://dev.twitter.com/rest/public).
 
-Time spent: **X** hours spent in total
+Time spent: **10** hours spent in total
 
 ## User Stories
 
@@ -44,13 +44,16 @@ The following **additional** features are implemented:
 * [x] List anything else that you can get done to improve the app functionality!
 
 ## Improvements
-* Allow a user to click on an image and inflate the image in a different view
+* Allow a user to unfavorite/unretweet
+* Automatically bring up the keyboard when composing
+* Implement the Twitter icon in the Toolbar
+* Rounded corners on images
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+![App Demo](screenshots/i.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
