@@ -50,8 +50,9 @@ public class ComposeActivity extends AppCompatActivity {
         String etComposeStartText = getIntent().getStringExtra(KEY_STARTTEXT);
         if(etComposeStartText != null) {
             etCompose.setText(etComposeStartText);
-            etCompose.requestFocus();
         }
+
+        etCompose.requestFocus();
 
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
