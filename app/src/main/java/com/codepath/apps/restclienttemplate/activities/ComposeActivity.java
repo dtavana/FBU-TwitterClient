@@ -38,7 +38,7 @@ public class ComposeActivity extends AppCompatActivity {
         binding = ActivityComposeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        //Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         client = TwitterApp.getRestClient(this);
 

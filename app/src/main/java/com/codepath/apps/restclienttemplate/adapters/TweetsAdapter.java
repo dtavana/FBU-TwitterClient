@@ -2,6 +2,7 @@ package com.codepath.apps.restclienttemplate.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ import java.util.List;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
+
+    public static final String TAG = "TweetsAdapter";
 
     Context ctx;
     List<Tweet> tweets;
@@ -57,32 +60,24 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         return tweets.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ItemTweetBinding binding;
 
+        Tweet tweet;
+
         public ViewHolder(ItemTweetBinding binding) {
             super(binding.getRoot());
+            itemView.setOnClickListener(this);
+            // Fix for clicking on body not expanding to detail view
+            binding.tvBody.setOnClickListener(this);
             this.binding = binding;
-        }
-
-        private void setupDetailsClick(final Tweet tweet) {
-            binding.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = new Intent(ctx, DetailsActivity.class);
-                    i.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
-                    ctx.startActivity(i);
-                }
-            });
         }
 
         public void bind(final Tweet tweet) {
             // Fix for a ViewHolder showing the wrong image after scrolling
             binding.ivMedia.setImageResource(android.R.color.transparent);
-
-            setupDetailsClick(tweet);
-
+            this.tweet = tweet;
             GlideApp.with(ctx)
                     .load(tweet.getUser().getImageUrl())
                     .transform(new RoundedCornersTransformation(30, 10))
@@ -98,6 +93,14 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             binding.tvScreenName.setText(tweet.getUser().getScreenName());
             binding.tvName.setText(tweet.getUser().getName());
             binding.tvTimestamp.setText(tweet.getRelativeTimeAgo());
+        }
+
+        @Override
+        public void onClick(View view) {
+            Log.d(TAG, "onClick: Successful click");
+            Intent i = new Intent(ctx, DetailsActivity.class);
+            i.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
+            ctx.startActivity(i);
         }
     }
 
